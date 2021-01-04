@@ -23,4 +23,4 @@ CREATE TABLE IF NOT EXISTS [events] (
 )
 """
 
-INSERT_MESSAGE_QUERY = "INSERT INTO [events] ([topic], [value]) " "VALUES (?, ?)"
+INSERT_MESSAGE_QUERY = "INSERT INTO [events] ([topic], [value]) VALUES (?, ?)"
