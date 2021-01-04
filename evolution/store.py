@@ -1,4 +1,4 @@
-# WIP. Store all event to a sqlite db. Just need to connect it to the
+# WIP. Store all event to a sqlite db. Just need to connected to the
 # `listener` module but ccurently this feature is not needed/used/implemented.
 
 import sqlite3
