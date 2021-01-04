@@ -7,9 +7,7 @@ authors = ["Richard Westberg <westberg.richard@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 adafruit-circuitpython-max31865 = "^2.2.5"
-pyzmq = "^20.0.0"
 "RPi.GPIO" = "^0.7.0"
-dataset = "^1.4.1"
 websockets = "^8.1"
 simple-pid = "^0.2.4"
 
