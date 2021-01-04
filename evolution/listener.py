@@ -13,7 +13,7 @@ async def listener(uri, handler_fn, topics):
         async for message in websocket:
             data = json.loads(message)
 
-            if topics and data["type"] not in topics:
+            if topics and data["topic"] not in topics:
                 return
 
             handler_fn(data)

@@ -145,13 +145,13 @@ def ssr(pin):
     return ssr
 
 
-def event(type, data):
-    return json.dumps({"type": type, **data})
+def event(topic, data):
+    return json.dumps({"topic": topic, **data})
 
 
-async def publish_event(clients, type, data):
+async def publish_event(clients, topic, data):
     if clients:
-        json_data = json.dumps({"type": type, **data})
+        json_data = json.dumps({"topic": topic, **data})
         await asyncio.wait([client.send(json_data) for client in clients])
 
 
