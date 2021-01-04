@@ -98,9 +98,9 @@ class Evolution:
 
 
 def heater_stats(boiler, steam, pid, state):
-    steam_temp = 0  # steam_sensor.temperature
+    steam_temp = steam.temperature
     boiler_temp = boiler.temperature
-    actual_temp = steam_temp if state["state"] != "boil" else boiler_temp
+    actual_temp = steam_temp if state["steamOn"] else boiler_temp
     error = pid.update(actual_temp)
     duty_cycle = parse_duty_cycle(error)
 
@@ -112,10 +112,6 @@ def heater_stats(boiler, steam, pid, state):
     }
 
     return stats
-
-
-async def wait_handler(wait_time, wait_on, begin_fn, end_fn):
-    pass
 
 
 def pid_target(state):
