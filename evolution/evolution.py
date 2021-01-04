@@ -93,7 +93,7 @@ class Evolution:
 
     def run(self):
         try:
-            start_server = websockets.serve(self.websocket_handler, "localhost", 6789)
+            start_server = websockets.serve(self.websocket_handler, "127.0.0.1", 6789)
             asyncio.get_event_loop().run_until_complete(
                 asyncio.wait([start_server, self.heater_handler()])
             )
