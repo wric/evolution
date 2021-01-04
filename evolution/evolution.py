@@ -63,7 +63,7 @@ class Evolution:
         while True:
             stats = heater_stats(self.boiler, self.steam, self.pid, self.state)
             self.heater.ChangeDutyCycle(stats["heater_pwm"])
-            await publish_event(self.clients, "log", stats)
+            await publish_event(self.clients, "stats", stats)
             await asyncio.sleep(self.wait)
 
     async def websocket_handler(self, websocket, _):
