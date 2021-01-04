@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "evolution"
+version = "0.1.0"
+description = ""
+authors = ["Richard Westberg <westberg.richard@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+adafruit-circuitpython-max31865 = "^2.2.5"
+pyzmq = "^20.0.0"
+"RPi.GPIO" = "^0.7.0"
+dataset = "^1.4.1"
+Flask = "^1.1.2"
+websockets = "^8.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.6"
+black = "^20.8b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+evo = "evolution:run"
+printer = "evolution.printer:main"
