@@ -23,6 +23,9 @@ class UnsupportedState(Exception):
 
 
 class State(UserDict):
+    """ A modified dict to handle the machine state.
+        Should probably be re-written as a real object.
+    """
     def __init__(self, *args, save_path="", **kwargs):
         super().__init__(*args, **kwargs)
         self.save_path = save_path
