@@ -10,7 +10,6 @@ adafruit-circuitpython-max31865 = "^2.2.5"
 pyzmq = "^20.0.0"
 "RPi.GPIO" = "^0.7.0"
 dataset = "^1.4.1"
-Flask = "^1.1.2"
 websockets = "^8.1"
 
 [tool.poetry.dev-dependencies]
