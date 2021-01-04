@@ -19,7 +19,7 @@ async def listener(uri, handler_fn, topics):
             handler_fn(data)
 
 
-if __name__ == "__main__":
+def main():
     args = sys.argv
     uri = "127.0.0.1:6789" if len(args) == 0 else args[0]
     topics = [] if len(args) < 2 else args[1].split(",")
@@ -27,3 +27,7 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(listener(uri, print, topics))
     loop.run_forever()
+
+
+if __name__ == "__main__":
+    main()

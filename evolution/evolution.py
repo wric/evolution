@@ -155,6 +155,10 @@ async def publish_event(clients, topic, data):
         await asyncio.wait([client.send(json_data) for client in clients])
 
 
-if __name__ == "__main__":
+def main():
     evo = Evolution(5, 6, 16, 26)
     evo.run()
+
+
+if __name__ == "__main__":
+    main()
