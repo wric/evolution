@@ -9,8 +9,8 @@ import digitalio
 import RPi.GPIO as GPIO
 import websockets
 from adafruit_max31865 import MAX31865
+from simple_pid import PID
 
-from evolution.pid import PID
 from evolution.state import load_state, save_state
 
 
@@ -18,8 +18,13 @@ class Evolution:
     def __init__(self, boiler_pin, steam_pin, heater_pin, pump_pin, wait=1) -> None:
         self.clients = set()
         self.state = load_state("state.json")
-        self.pid = PID(self.state["kp"], self.state["ki"], self.state["kd"])
-        self.pid.SetPoint = pid_target(self.state)
+        self.pid = PID(
+            self.state["kp"],
+            self.state["ki"],
+            self.state["kd"],
+            setpoint=pid_target(self.state),
+            output_limits=(0, 100),
+        )
         self.wait = wait
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -70,8 +75,12 @@ class Evolution:
                 action = data["action"]
                 value = data["value"]
                 self.state[action] = value
-                self.pid.SetPoint = pid_target(self.state)
-                self.pid.tune(self.state["kp"], self.state["ki"], self.state["kd"])
+                self.pid.setpoint = pid_target(self.state)
+                self.pid.tunings = (
+                    self.state["kp"],
+                    self.state["ki"],
+                    self.state["kd"],
+                )
 
                 if action == "pumpOn":
                     if not self.pump_task.done():
@@ -101,8 +110,7 @@ def heater_stats(boiler, steam, pid, state):
     steam_temp = steam.temperature
     boiler_temp = boiler.temperature
     actual_temp = steam_temp if state["steamOn"] else boiler_temp
-    error = pid.update(actual_temp)
-    duty_cycle = parse_duty_cycle(error)
+    duty_cycle = pid(actual_temp)
 
     stats = {
         "steam_temp": steam_temp,
@@ -145,12 +153,6 @@ async def publish_event(clients, type, data):
     if clients:
         json_data = json.dumps({"type": type, **data})
         await asyncio.wait([client.send(json_data) for client in clients])
-
-
-def parse_duty_cycle(duty_cycle):
-    max_duty = 100.0
-    min_duty = 0.0
-    return max(min(duty_cycle, max_duty), min_duty)
 
 
 if __name__ == "__main__":

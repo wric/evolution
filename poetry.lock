@@ -381,6 +381,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "simple-pid"
+version = "0.2.4"
+description = "A simple, easy to use PID controller"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+docs = ["m2r", "sphinx-rtd-theme"]
+
+[[package]]
 name = "six"
 version = "1.15.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -463,7 +474,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "502bf3cee8351d1f5758653ff4d6970b890155f9d2a845d8c61aacbd412d5aea"
+content-hash = "cd604fd6dc1e76c1d728dbc94468ff55e2d3590bf57bad24158169082599bfdb"
 
 [metadata.files]
 adafruit-blinka = [
@@ -731,6 +742,10 @@ regex = [
 ]
 "rpi.gpio" = [
     {file = "RPi.GPIO-0.7.0.tar.gz", hash = "sha256:7424bc6c205466764f30f666c18187a0824077daf20b295c42f08aea2cb87d3f"},
+]
+simple-pid = [
+    {file = "simple-pid-0.2.4.tar.gz", hash = "sha256:d1192b4c42ea5b3d278bb85b565841acb6292e60af2fb31f28c56eb8e704326d"},
+    {file = "simple_pid-0.2.4-py2.py3-none-any.whl", hash = "sha256:25cfa3408a7b024e090dab00813866b46eca31452ecfc982a7078b4a4730686c"},
 ]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
