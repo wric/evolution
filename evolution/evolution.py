@@ -41,7 +41,6 @@ class Evolution:
         self.state[action] = value
 
         if action == "pumpOn":
-            print(action,value)
             self.pump.run(self.state, self.pump_callback)
 
         if action in ("kp", "ki", "kd", "boil", "steam"):
