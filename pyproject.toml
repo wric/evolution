@@ -12,8 +12,9 @@ websockets = "^8.1"
 simple-pid = "^0.2.4"
 
 [tool.poetry.dev-dependencies]
-pytest = "^4.6"
+pytest = "^6.2.1"
 black = "^20.8b1"
+pytest-asyncio = "^0.14.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
