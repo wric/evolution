@@ -21,7 +21,7 @@ class Heater:
 
 
 def run_heater(heater, steam_on):
-    steam_temp = 0 # heater.steam.temperature
+    steam_temp = heater.steam.temperature
     boiler_temp = heater.boiler.temperature
     actual_temp = steam_temp if steam_on else boiler_temp
     duty_cycle = heater.pid(actual_temp)
