@@ -72,8 +72,6 @@ async def send_message(clients, topic, data):
         return
 
     message = event(topic, data)
-    if topic != "stats":
-        print(message)
     await asyncio.wait([ws.send(message) for ws in clients])
 
 
