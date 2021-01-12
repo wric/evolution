@@ -3,9 +3,10 @@ from dataclasses import asdict, dataclass
 
 from evolution.common import ssr
 
-PMW_BREW = 100
-PMW_PREINF = 20
-PMW_OFF = 0
+PWM_BREW = 100
+PWM_PREINF = 20
+PWM_OFF = 0
+ONE_HOUR = 3600
 
 
 class Pump:
@@ -13,7 +14,7 @@ class Pump:
         self.ssr = ssr(pump_pin)
         self.task = asyncio.Task(asyncio.sleep(0))
 
-    def run(self, state, callback=None):
+    def run(self, state, callback):
         if not self.task.done():
             self.task.cancel()
 
@@ -29,29 +30,25 @@ class Run:
 async def run_pump(ssr, state, callback):
     for run in evaluate_runs(state):
         ssr.ChangeDutyCycle(run.pwm)
-
-        if callback:
-            await callback(asdict(run))
-
-        if run.duration is not None:
-            await asyncio.sleep(run.duration)
+        await callback(asdict(run))
+        await asyncio.sleep(run.duration)
 
     await callback("off")
 
 
 def evaluate_runs(state):
-    stop_pump = Run(0, 0)
+    pump_off = Run(PWM_OFF, 0)
 
     if not state["pumpOn"]:
-        return [stop_pump]
+        return [pump_off]
 
     runs = []
     if state["preinfOn"]:
-        runs += [Run(PMW_PREINF, state["preinf"]), stop_pump]
+        runs += [Run(PWM_PREINF, state["preinf"]), pump_off]
 
     if state["timerOn"]:
-        runs += [Run(PMW_BREW, state["timer"]), stop_pump]
+        runs += [Run(PWM_BREW, state["timer"]), pump_off]
     else:
-        runs.append(Run(PMW_BREW, None))
+        runs.append(Run(PWM_BREW, ONE_HOUR))
 
     return runs
