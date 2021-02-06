@@ -2,6 +2,7 @@ import asyncio
 import json
 
 import RPi.GPIO as GPIO
+import zmq
 import zmq.asyncio
 
 from evolution.heater import Heater
