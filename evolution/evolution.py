@@ -33,6 +33,7 @@ class Evolution:
         self.publisher.bind(f"tcp://127.0.0.1:{pub_port}")
         self.subscriber = context.socket(zmq.SUB)
         self.subscriber.connect(f"tcp://127.0.0.1:{sub_port}")
+        self.subscriber.subscribe("")
 
     async def message_handler(self, message):
         action, value = json.loads(message).values()
@@ -64,17 +65,13 @@ class Evolution:
         else:
             await self.send_message("pump", data)
 
-    async def send_message(self, *args):
-        message = event(*args)
-        await self.publisher.send(message)
-
-
-def event(topic, data):
-    return json.dumps({"topic": topic, **data})
+    async def send_message(self, topic, data):
+        message = {"topic": topic, **data}
+        await self.publisher.send_json(message)
 
 
 def main():
-    evo = Evolution("state.json", 5, 6, 16, 26, 1, 5550, 5560)
+    evo = Evolution("state.json", 5, 6, 16, 26, 5550, 5560, 1)
 
     try:
         loop = asyncio.get_event_loop()
