@@ -36,7 +36,7 @@ class Evolution:
         self.subscriber.subscribe("")
 
     async def message_handler(self, message):
-        action, value = json.loads(message).values()
+        action, value = message.values()
         self.state[action] = value
 
         if action == "pumpOn":
@@ -55,7 +55,7 @@ class Evolution:
 
     async def subscriber_handler(self):
         while True:
-            message = await self.subscriber.recv()
+            message = await self.subscriber.recv_json()
             await self.message_handler(message)
 
     async def pump_callback(self, data):
