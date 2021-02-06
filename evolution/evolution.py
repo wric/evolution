@@ -2,7 +2,7 @@ import asyncio
 import json
 
 import RPi.GPIO as GPIO
-import websockets
+import zmq.asyncio
 
 from evolution.heater import Heater
 from evolution.pump import Pump
@@ -10,8 +10,6 @@ from evolution.state import load_state, save_state
 
 
 class Evolution:
-    clients = set()
-
     def __init__(
         self,
         state_path,
@@ -19,6 +17,8 @@ class Evolution:
         steam_pin,
         heater_pin,
         pump_pin,
+        pub_port,
+        sub_port,
         update_interval=1,
     ):
         self.state = load_state(state_path)
@@ -27,14 +27,11 @@ class Evolution:
         self.heater.tune(self.state)
         self.update_interval = update_interval
 
-    async def websocket_handler(self, websocket, _):
-        self.clients.add(websocket)
-        try:
-            await websocket.send(event("state", self.state))
-            async for message in websocket:
-                await self.message_handler(message)
-        finally:
-            self.clients.remove(websocket)
+        context = zmq.asyncio.Context.instance()
+        self.publisher = context.socket(zmq.PUB)
+        self.publisher.bind(f"tcp://127.0.0.1:{pub_port}")
+        self.subscriber = self.contex.socket(zmq.SUB)
+        self.subscriber.connect(f"tcp://127.0.0.1:{sub_port}")
 
     async def message_handler(self, message):
         action, value = json.loads(message).values()
@@ -51,27 +48,24 @@ class Evolution:
     async def heater_handler(self):
         while True:
             stats = self.heater.run(self.state["steamOn"])
-            await send_message(self.clients, "stats", stats)
+            await self.send_message("stats", stats)
             await asyncio.sleep(self.update_interval)
 
-    async def pump_callback(self, data):
-        if data != "off":
-            await self.send_message("pump", data)
-            return
+    async def subscriber_handler(self):
+        while True:
+            message = await self.subscriber.recv()
+            await self.message_handler(message)
 
-        self.state["pumpOn"] = False
-        await self.send_message("state", self.state)
+    async def pump_callback(self, data):
+        if data == "off":
+            self.state["pumpOn"] = False
+            await self.send_message("state", self.state)
+        else:
+            await self.send_message("pump", data)
 
     async def send_message(self, *args):
-        await send_message(self.clients, *args)
-
-
-async def send_message(clients, topic, data):
-    if not clients:
-        return
-
-    message = event(topic, data)
-    await asyncio.wait([ws.send(message) for ws in clients])
+        message = event(*args)
+        await self.publisher.send(message)
 
 
 def event(topic, data):
@@ -79,12 +73,13 @@ def event(topic, data):
 
 
 def main():
-    evo = Evolution("state.json", 5, 6, 16, 26, 1)
-    server = websockets.serve(evo.websocket_handler, "127.0.0.1", 6789)
+    evo = Evolution("state.json", 5, 6, 16, 26, 1, 5550, 5560)
 
     try:
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(asyncio.wait([server, evo.heater_handler()]))
+        loop.run_until_complete(
+            asyncio.wait([evo.subscriber_handler(), evo.heater_handler()])
+        )
     except KeyboardInterrupt:
         print("Exiting on KeyboardInterrupt.")
     except Exception as ex:

@@ -8,8 +8,8 @@ authors = ["Richard Westberg <westberg.richard@gmail.com>"]
 python = "^3.7"
 adafruit-circuitpython-max31865 = "^2.2.5"
 "RPi.GPIO" = "^0.7.0"
-websockets = "^8.1"
 simple-pid = "^0.2.4"
+pyzmq = "^22.0.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"

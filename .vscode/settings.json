@@ -1,4 +1,10 @@
 {
   "python.pythonPath": "/home/pi/.cache/pypoetry/virtualenvs/evolution-5pH7x3-v-py3.7/bin/python3",
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "python.testing.pytestArgs": [
+    "."
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestEnabled": true
 }
