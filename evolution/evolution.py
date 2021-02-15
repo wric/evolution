@@ -31,7 +31,7 @@ class Evolution:
         context = zmq.asyncio.Context.instance()
         self.publisher = context.socket(zmq.PUB)
         self.publisher.bind(f"tcp://127.0.0.1:{pub_port}")
-        self.subscriber = context.socket(zmq.SUB)
+        self.subscriber = context.socket(zmq.XSUB)
         self.subscriber.connect(f"tcp://127.0.0.1:{sub_port}")
         self.subscriber.subscribe("")
 
