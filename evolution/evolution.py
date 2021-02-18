@@ -1,9 +1,6 @@
 import asyncio
 import json
 
-import RPi.GPIO as GPIO
-import websockets
-
 from evolution.heater import Heater
 from evolution.pump import Pump
 from evolution.state import load_state, save_state
@@ -76,23 +73,3 @@ async def send_message(clients, topic, data):
 
 def event(topic, data):
     return json.dumps({"topic": topic, **data})
-
-
-def main():
-    evo = Evolution("state.json", 5, 6, 16, 26, 1)
-    server = websockets.serve(evo.websocket_handler, "127.0.0.1", 6789)
-
-    try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(asyncio.wait([server, evo.heater_handler()]))
-    except KeyboardInterrupt:
-        print("Exiting on KeyboardInterrupt.")
-    except Exception as ex:
-        print(f"Exiting on unhandled exeption: '{ex}'.")
-    finally:
-        GPIO.cleanup()
-        save_state(evo.state)
-
-
-if __name__ == "__main__":
-    main()

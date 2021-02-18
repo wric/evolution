@@ -1,0 +1,9 @@
+{
+  "steam_enabled": true,
+  "boiler_pin": 5,
+  "steam_pin": 6,
+  "heater_pin": 16,
+  "pump_pin": 26,
+  "update_interval": 1,
+  "websocket_port": 6789
+}
